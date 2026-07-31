@@ -1,0 +1,12 @@
+.productCard .textPart{
+    transition: transform 0.3s ease-in-out;
+}
+.productCard:hover .textPart{
+    transform: translateY(-1rem);
+}
+.productCard:hover{
+     transform: translateY(-10px);
+  
+  /* Spreads the shadow, making the card appear to float */
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.45);
+}
