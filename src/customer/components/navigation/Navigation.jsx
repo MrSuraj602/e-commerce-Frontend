@@ -1,6 +1,7 @@
 'use client'
 
 import { Fragment, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { UserCircleIcon } from '@heroicons/react/24/outline'
 import {
   Dialog,
@@ -145,7 +146,13 @@ const navigation = {
 export default function Navigation() {
   const [open, setOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
+  const navigate = useNavigate()
 
+  const handleCategoryClick = (categoryId, sectionId, itemName, close = () => {}) => {
+    const itemSlug = encodeURIComponent(itemName)
+    navigate(`/category/${categoryId}/${sectionId}/${itemSlug}`)
+    close()
+  }
   return (
     <div className="bg-white">
       {/* Mobile menu */}
@@ -218,9 +225,15 @@ export default function Navigation() {
                         >
                           {section.items.map((item) => (
                             <li key={item.name} className="flow-root">
-                              <a href={item.href} className="-m-2 block p-2 text-gray-500">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  handleCategoryClick(category.id, section.id, item.name, () => setOpen(false))
+                                }
+                                className="-m-2 block w-full p-2 text-left text-gray-500"
+                              >
                                 {item.name}
-                              </a>
+                              </button>
                             </li>
                           ))}
                         </ul>
@@ -342,9 +355,13 @@ export default function Navigation() {
                                     >
                                       {section.items.map((item) => (
                                         <li key={item.name} className="flex">
-                                          <a href={item.href} className="hover:text-gray-800">
+                                          <button
+                                            type="button"
+                                            onClick={() => handleCategoryClick(category.id, section.id, item.name)}
+                                            className="hover:text-gray-800 text-left"
+                                          >
                                             {item.name}
-                                          </a>
+                                          </button>
                                         </li>
                                       ))}
                                     </ul>
@@ -392,6 +409,7 @@ export default function Navigation() {
                         Profile
                       </button>
                       <button
+                      onClick={()=>navigate("/account/order")}
                         type="button"
                         className="w-full rounded-lg px-4 py-3 text-left text-sm font-medium text-gray-700 hover:bg-gray-50"
                       >
