@@ -1,7 +1,7 @@
 'use client'
 
-import { Fragment, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Fragment, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { UserCircleIcon } from '@heroicons/react/24/outline'
 import {
   Dialog,
@@ -18,6 +18,10 @@ import {
   TabPanels,
 } from '@headlessui/react'
 import { Bars3Icon, MagnifyingGlassIcon, ShoppingBagIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import AuthModal from '../../Auth/AuthModal';
+import { Button } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUser, logout } from '../../../State/Auth/Action';
 
 const navigation = {
   categories: [
@@ -147,12 +151,36 @@ export default function Navigation() {
   const [open, setOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
   const navigate = useNavigate()
+  const [openAuthModal, setOpenAuthModal] = useState(false);
+  const {auth}=useSelector(store=>store)
+  const dispatch= useDispatch();
+  const jwt = auth.jwt;
 
+
+  const handleOpen=()=>{
+    setOpenAuthModal(true);
+  };
+
+  
+  const handleClose=()=>{
+    setOpenAuthModal(false);
+  };
   const handleCategoryClick = (categoryId, sectionId, itemName, close = () => {}) => {
     const itemSlug = encodeURIComponent(itemName)
     navigate(`/category/${categoryId}/${sectionId}/${itemSlug}`)
     close()
   }
+  useEffect(()=>{
+    if(jwt){
+      dispatch(getUser(jwt))
+    }
+  },[dispatch,jwt])
+
+  const handleLogout=()=>{
+    dispatch(logout())
+    handleClose()
+  }
+
   return (
     <div className="bg-white">
       {/* Mobile menu */}
@@ -389,7 +417,7 @@ export default function Navigation() {
               <div className="ml-auto flex items-center">
                 
 
-                <div className="hidden lg:ml-8 lg:flex">
+                {auth.user ? (<div className="hidden lg:ml-8 lg:flex">
                   <button
                     type="button"
                     onClick={() => setProfileOpen((prev) => !prev)}
@@ -416,6 +444,7 @@ export default function Navigation() {
                         My Orders
                       </button>
                       <button
+                      onClick={handleLogout}
                         type="button"
                         className="w-full rounded-lg px-4 py-3 text-left text-sm font-medium text-red-600 hover:bg-red-50"
                       >
@@ -424,6 +453,12 @@ export default function Navigation() {
                     </div>
                   )}
                 </div>
+                ):(
+                  <Button
+                  onClick={handleOpen}>
+                    Sign In
+                  </Button>
+                )}
 
                 {/* Search */}
                 <div className="flex lg:ml-6">
@@ -449,6 +484,8 @@ export default function Navigation() {
           </div>
         </nav>
       </header>
+
+      <AuthModal open={openAuthModal && !auth.user} handleClose={handleClose} />
     </div>
   )
 }
