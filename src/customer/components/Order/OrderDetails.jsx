@@ -18,8 +18,8 @@ const OrderDetails = () => {
             </div>
 
             <Grid className="space-y-5 " container>
-                {[1,1,1,1].map((item)=><Grid item container className="shadow-xl rounded-md p-5 border w-full " sx={{ alighItems: "center", justifyContent: "space-between" }}>
-                    <Grid item xs={6}>
+                {[1,1,1,1].map((item)=><Grid container className="shadow-xl rounded-md p-5 border w-full " sx={{ alighItems: "center", justifyContent: "space-between" }}>
+                    <Grid size={{ xs: 6 }}>
                         <div className="flex items-center space-x-4 ">
                             <img 
                             className="w-[5rem] h-[5rem] object-cover object-top"
@@ -36,7 +36,7 @@ const OrderDetails = () => {
                         </div>
                     </Grid>
 
-                    <Grid item xs={6}>
+                    <Grid size={{ xs: 6 }}>
                         <Box sx={{color:deepPurple[500]}}>
                             <StarBorderIcon  sx={{fontSize:"2rem"}} className="px-2 text-5xl"></StarBorderIcon>
                             <span>Rate & Review Product</span>

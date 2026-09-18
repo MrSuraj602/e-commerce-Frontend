@@ -1,19 +1,37 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CartItem from "./CartItem";
-import { Button, Divider } from "@mui/material";
+import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { get } from "../../../State/Cart/Action";
 
 const Cart = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { cartItems = [], loading } = useSelector((state) => state.cart);
+
+  useEffect(() => {
+    dispatch(get());
+  }, [dispatch]);
+
   const handleCheckOut = () => {
     navigate("/checkout?step=2");
+  };
+
+  if (loading && cartItems.length === 0) {
+    return <div className="px-5 py-10 text-center text-gray-600">Loading cart...</div>;
   }
+
+  if (!cartItems.length) {
+    return <div className="px-5 py-10 text-center text-gray-600">Your cart is empty.</div>;
+  }
+
   return (
     <div>
       <div className="lg:grid grid-cols-3 lg:px-16 relative">
         <div className="col-span-2">
-          {[1,1,1,1].map((item) => (
-            <CartItem />
+          {cartItems.map((item) => (
+            <CartItem key={item.id || item.product?.id || item.size} item={item} />
           ))}
         </div>
         <div className="px-5 sticky top-0 h-[100vh] mt-5 lg:mt-0">
@@ -40,7 +58,7 @@ const Cart = () => {
             </div>
 
             <Button
-            onClick={handleCheckOut}
+              onClick={handleCheckOut}
               className="w-full mt-5"
               variant="contained"
               sx={{ px: "2.5rem", py: "0.7rem", bgcolor: "#9155fd" }}

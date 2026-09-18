@@ -5,9 +5,23 @@ export const findProducts = (reqData) => async (dispatch) => {
 
     dispatch({type:FIND_PRODUCTS_REQUEST})
 
-    const { colors, sizes, minPrice, maxPrice, minDiscount, category, stock, sort, pageNumber, pageSize, } = reqData;
+    const { colors, size, minPrice = 0, maxPrice = 0, minDiscount = 0, category = '', stock = '', sort = 'price_low', pageNumber = 0, pageSize = 10 } = reqData;
+
     try {
-        const {data} = api.get(`/api/products/color=${colors}&size=${sizes}&minPrice=${minPrice}&maxPrice=${maxPrice}&minDiscount=${minDiscount}&category=${category}&stock=${stock}&sort=${sort}&pageNumber=${pageNumber}&pageSize=${pageSize}`)
+        const params = new URLSearchParams({
+            color: colors ?? '',
+            size: size ?? '',
+            minPrice: minPrice ?? 0,
+            maxPrice: maxPrice ?? 0,
+            minDiscount: minDiscount ?? 0,
+            category: category ?? '',
+            stock: stock ?? '',
+            sort: sort ?? 'price_low',
+            pageNumber: pageNumber ?? 0,
+            pageSize: pageSize ?? 10,
+        });
+
+        const { data } = await api.get(`/api/products?${params.toString()}`)
 
         dispatch({type:FIND_PRODUCTS_SUCCESS, payload:data})
     } catch (error) {
@@ -23,7 +37,7 @@ export const findProductsById = (reqData) => async (dispatch) => {
 
     const { productId } = reqData;
     try {
-        const {data} = api.get(`/api/products/${productId}`)
+        const {data} = await api.get(`/api/products/${productId}`)
 
         dispatch({type:FIND_PRODUCT_BY_ID_SUCCESS, payload:data})
     } catch (error) {

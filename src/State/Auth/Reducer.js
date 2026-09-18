@@ -1,10 +1,12 @@
 import { GET_USER_FAILURE, GET_USER_REQUEST, GET_USER_SUCCESS, LOGIN_FAILURE, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT, REGISTER_FAILURE, REGISTER_REQUEST, REGISTER_SUCCESS } from "./ActionType";
 
+const persistedJwt = localStorage.getItem("jwt") || localStorage.getItem("token");
+
 const initialState={
     user:null,
     isLoading:false,
     error:null,
-    jwt:null
+    jwt:persistedJwt
 }
 
 export const authReducer=(state=initialState,action)=>{

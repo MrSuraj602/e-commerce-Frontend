@@ -33,7 +33,7 @@ const LoginForm = () => {
         <Grid container spacing={2.25} sx={{ width: '100%' }}>
           
 
-           <Grid item xs={12} sx={{ width: '100%' }}>
+           <Grid size={{ xs: 12 }} sx={{ width: '100%' }}>
             <TextField 
             required
             id="email"
@@ -51,7 +51,7 @@ const LoginForm = () => {
             />
           </Grid>
 
-           <Grid item xs={12} sx={{ width: '100%' }}>
+           <Grid size={{ xs: 12 }} sx={{ width: '100%' }}>
             <TextField 
             required
             id="password"
@@ -70,7 +70,7 @@ const LoginForm = () => {
           </Grid>
           
         </Grid>
-         <Grid item xs={12} sm={12} sx={{ mt: 2 }}>
+         <Grid size={{ xs: 12, sm: 12 }} sx={{ mt: 2 }}>
             <Button 
             className="bg-[#9155FD] w-full"
             type="submit"

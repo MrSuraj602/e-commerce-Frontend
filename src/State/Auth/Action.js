@@ -14,6 +14,7 @@ export const register = (userData)=> async (dispatch)=>{
         const user = response.data;
         if(user.jwt){
             localStorage.setItem("jwt",user.jwt)
+            localStorage.setItem("token",user.jwt)
         }
         console.log("user",user);
         dispatch(registerSuccess(user.jwt))
@@ -35,6 +36,7 @@ export const login = (userData)=> async (dispatch)=>{
         const user = response.data;
         if(user.jwt){
             localStorage.setItem("jwt",user.jwt)
+            localStorage.setItem("token",user.jwt)
         }
         console.log("user",user);
         dispatch(loginSuccess(user.jwt))

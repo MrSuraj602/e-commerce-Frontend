@@ -23,8 +23,7 @@ const DeliveryAddressForm = () => {
         <div className="flex justify-around">
             <Grid container spacing={4}>
                 <Grid
-                    xs={12}
-                    lg={5}
+                    size={{ xs: 12, lg: 5 }}
                     className="boarder rounded-e-md shadow-md h-[30.5rem] overflow-y-scroll"
                 >
                     <div className="p-5 py-7 border-b cursor-pointer">
@@ -39,11 +38,11 @@ const DeliveryAddressForm = () => {
                     </div>
                 </Grid>
 
-                <Grid item xs={12} lg={7}>
+                <Grid size={{ xs: 12, lg: 7 }}>
                     <Box className="border rounded-s-md shadow-md p-5 w-[calc(100%-2rem)] ml-25">
                         <form onSubmit={handleSubmit} className="space-y-5 ">
                             <Grid container spacing={3}>
-                                <Grid item xs={12} sm={6}>
+                                <Grid size={{ xs: 12, sm: 6 }}>
                                     <TextField
                                         required
                                         id="firstName"
@@ -53,7 +52,7 @@ const DeliveryAddressForm = () => {
                                         autoComplete="given-name"
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid size={{ xs: 12, sm: 6 }}>
                                     <TextField
                                         required
                                         id="lastName"
@@ -64,7 +63,7 @@ const DeliveryAddressForm = () => {
                                     />
                                 </Grid>
                             </Grid>
-                            <Grid item xs={12} className="mt-5">
+                            <Grid size={{ xs: 12 }} className="mt-5">
                                 <TextField
                                     required
                                     id="address"
@@ -76,7 +75,7 @@ const DeliveryAddressForm = () => {
                                     rows={4}
                                 />
                             </Grid>
-                            <Grid item xs={12} className="mt-5">
+                            <Grid size={{ xs: 12 }} className="mt-5">
                                 <TextField
                                     required
                                     id="city"
@@ -86,7 +85,7 @@ const DeliveryAddressForm = () => {
                                     autoComplete="given-name"
                                 />
                             </Grid>
-                            <Grid item xs={12} className="mt-5">
+                            <Grid size={{ xs: 12 }} className="mt-5">
                                 <TextField
                                     required
                                     id="state"
@@ -96,7 +95,7 @@ const DeliveryAddressForm = () => {
                                     autoComplete="given-name"
                                 />
                             </Grid>
-                            <Grid item xs={12} className="mt-5">
+                            <Grid size={{ xs: 12 }} className="mt-5">
                                 <TextField
                                     required
                                     id="zip"
@@ -106,7 +105,7 @@ const DeliveryAddressForm = () => {
                                     autoComplete="shipping postal-code"
                                 />
                             </Grid>
-                            <Grid item xs={12} className="mt-5">
+                            <Grid size={{ xs: 12 }} className="mt-5">
                                 <TextField
                                     required
                                     id="phoneNumber"
@@ -116,7 +115,7 @@ const DeliveryAddressForm = () => {
                                     autoComplete="tel"
                                 />
                             </Grid>
-                            <Grid item xs={12} className="mt-5">
+                            <Grid size={{ xs: 12 }} className="mt-5">
                                 <Button
                                     type="submit"
                                     size="large"

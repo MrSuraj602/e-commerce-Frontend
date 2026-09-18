@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Dialog,
   DialogBackdrop,
@@ -18,7 +18,10 @@ import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from
 import ProductCard from './ProductCard';
 import { mens_tshirt } from '../../../data/mens_tshirt';
 import { filters, singleFilter } from './FilterData';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { findProducts } from '../../../State/Product/Action';
+import Pagination from '@mui/material/Pagination';
 
 const sortOptions = [
   { name: 'Price: Low to High', href: '#', current: false },
@@ -29,10 +32,30 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
+const normalizeCategory = (value = '') => {
+  return decodeURIComponent(String(value || '')).trim();
+};
+
 export default function Product() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
   const location = useLocation();
   const navigate = useNavigate();
+  const param = useParams();
+  const dispatch = useDispatch();
+  const {product} = useSelector(store => store)
+  const levelThree = normalizeCategory(param.item || param.levelThree || '');
+
+  const decodedQueryString = decodeURIComponent(location.search);
+  const searchParams = new URLSearchParams(decodedQueryString);
+  const colorValue = searchParams.get('color');
+  const sizeValue = searchParams.get('size');
+  const priceValue = searchParams.get('price');
+  const sortValue = searchParams.get('sort');
+  const categoryValue = searchParams.get('category');
+  const discountValue = searchParams.get('discount');
+  const brandValue = searchParams.get('brand');
+  const pageNumber = searchParams.get('page') || 1;
+  const stock = searchParams.get('stock');
 
   const selectedFilters = new URLSearchParams(location.search);
   const selectedValues = Array.from(selectedFilters.entries()).reduce((acc, [key, value]) => {
@@ -42,6 +65,39 @@ export default function Product() {
     acc[key] = Array.from(new Set(acc[key]));
     return acc;
   }, {});
+
+  useEffect(() => {
+
+    const [minPrice, maxPrice] = priceValue===null ? [0,0] : priceValue.split('-').map(Number);
+
+    const data = {
+      category: levelThree,
+      colors: colorValue || [],
+      size: sizeValue || [],
+      minPrice: minPrice,
+      maxPrice: maxPrice,
+      minDiscount: discountValue || 0,
+      sort: sortValue || 'price_low',
+      pageNumber: pageNumber - 1,
+      pageSize: 6,
+      stock: stock,
+      // category: categoryValue || [],
+      // brand: brandValue || [],
+    }
+
+    dispatch(findProducts(data));
+
+  },[
+    levelThree,
+    colorValue,
+    sizeValue,
+    priceValue,
+    discountValue,
+    sortValue,
+    pageNumber,
+    stock,
+    dispatch,
+  ])
 
   const handleFilter = (value, sectionId) => {
     const searchParam = new URLSearchParams(location.search);
@@ -73,9 +129,18 @@ export default function Product() {
     navigate(`${location.pathname}${nextSearch ? `?${nextSearch}` : ''}`);
   }
 
+  const handlePageChange = (_event, value) => {
+    const searchParam = new URLSearchParams(location.search);
+    searchParam.set('page', value);
+    const nextSearch = searchParam.toString();
+    navigate(`${location.pathname}${nextSearch ? `?${nextSearch}` : ''}`);
+  }
+
   const isFilterSelected = (sectionId, optionValue) => {
     return selectedValues[sectionId]?.includes(optionValue) ?? false;
   }
+
+  const productList = product?.products?.content ?? [];
 
   return (
     <div className="bg-white">
@@ -356,10 +421,25 @@ export default function Product() {
               {/* Product grid */}
               <div className="lg:col-span-4 w-full">
                 <div className="flex flex-wrap justify-center bg-white py-5">
-                    {mens_tshirt.map((item) =>(<ProductCard key={item.title} product={item} />))}
+                  {productList.length > 0 ? (
+                    productList.map((item) => <ProductCard key={item.id || item.title} product={item} />)
+                  ) : (
+                    <div className="w-full py-10 text-center text-gray-500">No products found</div>
+                  )}
                 </div>
                 
               </div>
+            </div>
+          </section>
+
+          <section className="w-full">
+            <div className="flex items-center justify-center">
+              <Pagination
+              count={product?.products?.totalPages || 1}
+              page={Number(pageNumber)}
+              color="secondary"
+              onChange={handlePageChange}
+            />
             </div>
           </section>
         </main>
