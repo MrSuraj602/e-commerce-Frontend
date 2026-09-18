@@ -101,7 +101,7 @@ export default function ProductDetails() {
     }
   }, [firstInStock, selectedSize])
 
-  const handleAddToCart = (event) => {
+  const handleAddToCart = async (event) => {
     event.preventDefault();
 
     if (!selectedSize) {
@@ -110,7 +110,7 @@ export default function ProductDetails() {
 
     const data = { productId: params.productId, size: selectedSize, quantity: 1 };
     console.log("data :", data);
-    dispatch(addItemToCart(data));
+    await dispatch(addItemToCart(data));
     navigate("/cart");
   }
 

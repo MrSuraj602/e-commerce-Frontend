@@ -8,7 +8,7 @@ import { get } from "../../../State/Cart/Action";
 const Cart = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { cartItems = [], loading } = useSelector((state) => state.cart);
+  const { cart, cartItems = [], loading } = useSelector((state) => state.cart);
 
   useEffect(() => {
     dispatch(get());
@@ -34,18 +34,18 @@ const Cart = () => {
             <CartItem key={item.id || item.product?.id || item.size} item={item} />
           ))}
         </div>
-        <div className="px-5 sticky top-0 h-[100vh] mt-5 lg:mt-0">
-          <div className="border">
-            <p className="uppercase font-bold opacity-60 pb-4">Price Details</p>
+        <div className="px-5 sticky top-0 h-[100vh] mt-5 lg:mb-10">
+          <div className="border m-6">
+            <p className="uppercase font-bold opacity-60 pb-4 ml-2 mt-2">Price Details</p>
             <hr />
-            <div className="space-y-3 font-semibold mb-10">
+            <div className="space-y-3 font-semibold m-2">
               <div className="flex justify-between pt-3 text-black">
                 <span>Price</span>
-                <span>1466</span>
+                <span>₹{cart?.totalPrice?.toLocaleString()}</span>
               </div>
-              <div className="flex justify-between pt-3">
+              <div className="flex justify-between pt-3 ">
                 <span>Discount</span>
-                <span className="text-green-600">166</span>
+                <span className="text-green-600">-₹{cart?.discounte?.toLocaleString()}</span>
               </div>
               <div className="flex justify-between pt-3 ">
                 <span>Delivery Charge</span>
@@ -53,7 +53,7 @@ const Cart = () => {
               </div>
               <div className="flex justify-between pt-3 font-bold">
                 <span>Total Amount</span>
-                <span className="text-green-600">1566</span>
+                <span className="text-green-600">₹{cart?.totalDiscountedPrice?.toLocaleString()}</span>
               </div>
             </div>
 

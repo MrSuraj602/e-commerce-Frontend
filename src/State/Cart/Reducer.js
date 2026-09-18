@@ -12,10 +12,10 @@ export const cartReducer = (state = initialState, action) => {
         case ADD_ITEM_TO_CART_REQUEST:
             return {...state,loading:true,error:null};
         case ADD_ITEM_TO_CART_SUCCESS:
-            return{
+            return {
                 ...state,
-                cartItems:[...state.cartItems, action.payload.cartItems],
                 loading: false,
+                error: null,
             };
 
         case ADD_ITEM_TO_CART_FAILURE:

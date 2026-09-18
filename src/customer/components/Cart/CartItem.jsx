@@ -9,9 +9,9 @@ const CartItem = ({ item }) => {
   const price = item?.discountedPrice ?? item?.price ?? 0;
 
   return (
-    <div className="p-5 shadow-lg border rounded-md">
-      <div className="flex items-center">
-        <div className="w-[5rem] h-[5rem] lg:w-[9rem] lg:h-[9rem]">
+    <div className="p-5 shadow-lg border rounded-md m-3">
+      <div className="flex items-center ">
+        <div className="w-[5rem] h-[5rem] lg:w-[9rem] lg:h-[9rem] ">
           <img
             className="w-full h-full object-cover object-top"
             src={product.imageUrl || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTI2qVZCCOi2Y74Hi3lDx02l0gGxjM2FJqciL-FYn6Q9Q&s=10"}
@@ -23,6 +23,7 @@ const CartItem = ({ item }) => {
           <p className="font-semibold">{product.title || "Product Name"}</p>
           <p className="opacity-70">₹{Number(price).toLocaleString()}</p>
           <p className="opacity-70 mt-2">Size: {item?.size || "N/A"}</p>
+          <p className="opacity-70 mt-2">Seller: {product.brand || "N/A"}</p>
           <div className="flex space-x-2 items-center text-gray-900 pt-5">
             <p className="font-semibold">₹{Number(product.discountedPrice || price).toLocaleString()}</p>
             <p className="opacity-50 line-through">₹{Number(product.price || price).toLocaleString()}</p>
