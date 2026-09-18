@@ -2,11 +2,24 @@ import { Button, IconButton } from "@mui/material";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import React from "react";
+import { useDispatch } from "react-redux";
+import { removeCartItem, upadateCartItem } from "../../../State/Cart/Action";
 
 const CartItem = ({ item }) => {
   const product = item?.product || {};
   const quantity = item?.quantity || 1;
   const price = item?.discountedPrice ?? item?.price ?? 0;
+  
+  const dispatch = useDispatch();
+
+  const handleUpdateCartItem = (num) => {
+    const data = {data: {quantity: item.quantity + num}, cartItemId: item?.id};
+    dispatch(upadateCartItem(data));
+  }
+
+  const handleRemoveCartItem = () => {
+    dispatch(removeCartItem(item?.id));
+  }
 
   return (
     <div className="p-5 shadow-lg border rounded-md m-3">
@@ -33,17 +46,17 @@ const CartItem = ({ item }) => {
       </div>
       <div className="lg:flex items-center lg:space-x-10 pt-4">
         <div className="flex items-center space-x-2">
-          <IconButton sx={{ color: "RGB(145 85 253)" }}>
+          <IconButton onClick={() => handleUpdateCartItem(-1)} disabled={quantity <= 1} sx={{ color: "RGB(145 85 253)" }}>
             <RemoveCircleIcon />
           </IconButton>
-          <span className="py-1 px-7 rounded-sm">{quantity}</span>
-          <IconButton sx={{ color: "RGB(145 85 253)" }}>
+          <span className="py-1 px-7 rounded-sm">{item.quantity}</span>
+          <IconButton onClick={() => handleUpdateCartItem(1)} sx={{ color: "RGB(145 85 253)" }}>
             <AddCircleIcon />
           </IconButton>
         </div>
 
         <div>
-          <Button sx={{ color: "RGB(245 85 53)" }}>remove</Button>
+          <Button onClick={handleRemoveCartItem} sx={{ color: "RGB(245 85 53)" }}>remove</Button>
         </div>
       </div>
     </div>
