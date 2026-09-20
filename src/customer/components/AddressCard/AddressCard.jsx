@@ -2,15 +2,12 @@ import React from 'react'
 
 const AddressCard = ({ address }) => {
   return (
-    <div>
-      <span className="font-bold opacity-60">Address Summary :</span>
-        <div className="space-y-3 w-[25rem]">
-            <p className="font-semibold opacity-50">{address?.firstName+" "+address?.lastName}</p>
-            <p className="opacity-50">{address?.state}, {address?.streetAddress} {address?.zipCode}</p>
-            <div className="space-y-1">
-                <p className="font-semibold opacity-50">Phone Number</p>
-                <p className="opacity-50">{address?.mobile}</p>
-            </div>
+    <div className="w-full text-right text-gray-700">
+        <p className="text-lg font-medium text-gray-800">{address?.firstName ?? 'undefined'} {address?.lastName ?? 'undefined'}</p>
+        <p className="mt-3 text-gray-500">"</p>
+        <div className="mt-4">
+            <p className="text-sm font-semibold text-gray-600">Phone Number</p>
+            <p className="text-gray-500">{address?.mobile ?? 'undefined'}</p>
         </div>
     </div>
   )
