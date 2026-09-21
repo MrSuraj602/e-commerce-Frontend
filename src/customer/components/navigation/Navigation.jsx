@@ -22,6 +22,7 @@ import AuthModal from '../../Auth/AuthModal';
 import { Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser, logout } from '../../../State/Auth/Action';
+import { get } from '../../../State/Cart/Action';
 
 const navigation = {
   categories: [
@@ -153,8 +154,13 @@ export default function Navigation() {
   const navigate = useNavigate()
   const [openAuthModal, setOpenAuthModal] = useState(false);
   const {auth}=useSelector(store=>store)
+  const cartItems = useSelector((store) => store.cart.cartItems);
   const dispatch= useDispatch();
   const jwt = auth.jwt;
+  const cartItemCount = cartItems.reduce(
+    (total, item) => total + Number(item.quantity || 0),
+    0,
+  );
 
 
   const handleOpen=()=>{
@@ -173,6 +179,7 @@ export default function Navigation() {
   useEffect(()=>{
     if(jwt){
       dispatch(getUser(jwt))
+      dispatch(get())
     }
   },[dispatch,jwt])
 
@@ -470,12 +477,21 @@ export default function Navigation() {
 
                 {/* Cart */}
                 <div className="ml-4 flow-root lg:ml-6">
-                  <a href="#" className="group -m-2 flex items-center p-2">
+                  <a
+                    href="/cart"
+                    onClick={(event) => {
+                      event.preventDefault()
+                      navigate('/cart')
+                    }}
+                    className="group -m-2 flex items-center p-2"
+                  >
                     <ShoppingBagIcon
                       aria-hidden="true"
                       className="size-6 shrink-0 text-gray-400 group-hover:text-gray-500"
                     />
-                    <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">0</span>
+                    <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
+                      {cartItemCount}
+                    </span>
                     <span className="sr-only">items in cart, view bag</span>
                   </a>
                 </div>
