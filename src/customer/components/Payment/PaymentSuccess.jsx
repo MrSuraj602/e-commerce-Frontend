@@ -17,16 +17,20 @@ const PaymentSuccess = () => {
     const dispatch = useDispatch();
     const {order} = useSelector((state) => state.order);
 
+    console.log("order -- - ",order);
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
-        setPaymentId(urlParams.get('razorpay_payment_link_id'));
+        setPaymentId(urlParams.get('razorpay_payment_id'));
         setPaymentStatus(urlParams.get('razorpay_payment_link_status'));
     },[])
 
     useEffect(() => {
-        const data = {orderId,paymentId}
+        if(paymentId){
+             const data = {orderId,paymentId}
         dispatch(getOrderById(orderId));
         dispatch(updatePayment(data));
+        }
+       
     },[orderId,paymentId])
 
   return (
@@ -46,7 +50,7 @@ const PaymentSuccess = () => {
         <OrderTracker activeStep={1} />
 
         <div className="mt-12 w-full rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
-            {[1,1,1,1].map((item, index) => (
+            {order?.orderItems?.map((item, index) => (
                 <div key={index} className="flex w-full items-center justify-between gap-6 border-b border-gray-200 py-5 last:border-b-0 first:pt-0 last:pb-0">
                     <div className="flex items-center gap-5">
                         <img
@@ -56,18 +60,18 @@ const PaymentSuccess = () => {
                         />
 
                         <div className="space-y-1 text-gray-700">
-                            <p className="text-lg font-medium">item.product.title</p>
+                            <p className="text-lg font-medium">{item.product.title}</p>
                             <div className="flex gap-5 text-sm text-gray-500">
-                                <span>Color: item.color</span>
-                                <span>Size: item.size</span>
+                                <span>Color: {item.color}</span>
+                                <span>Size: {item.size}</span>
                             </div>
-                            <p className="text-sm text-gray-500">Seller : item.product.brand</p>
-                            <p className="text-base font-semibold text-gray-800">₹ item.price</p>
+                            <p className="text-sm text-gray-500">Seller : {item.product.brand}</p>
+                            <p className="text-base font-semibold text-gray-800">₹ {item.price}</p>
                         </div>
                     </div>
 
                     <div className="min-w-[220px]">
-                        <AddressCard address={''} />
+                        <AddressCard address={order?.shippingAddress} />
                     </div>
                 </div>
             ))}
