@@ -1,16 +1,51 @@
-# React + Vite
+# E-Commerce Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The existing React storefront includes customer authentication, catalog browsing, cart, checkout, payment return, order history, and an administrator panel.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React 19 and Vite 8
+- React Router 7
+- Redux 5 with Redux Thunk
+- Axios, Material UI, Tailwind CSS, Headless UI, and Heroicons
 
-## React Compiler
+## Install And Run
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```powershell
+npm install
+npm run dev
+```
 
-## Expanding the ESLint configuration
+Production build and lint commands:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```powershell
+npm run build
+npm run lint
+```
+
+## API Configuration
+
+`src/config/apiConfig.js` reads `VITE_API_BASE_URL`. Leave it unset for local development: Vite proxies `/api` and `/auth` to `http://localhost:8080`. For a separately hosted API, set `VITE_API_BASE_URL` to its origin in the frontend environment. Do not put credentials or JWT secrets in frontend environment variables.
+
+## Customer Flow
+
+Customers register or sign in through the existing auth modal. The JWT is sent by the shared Axios client for protected requests. Catalog, cart, checkout, payment return, profile, and order pages continue to use the existing route and Redux structure. The order list fetches `GET /api/orders/user`; order details fetches `GET /api/orders/{id}` each time it opens, so administrator status changes appear on the next fetch or refresh.
+
+## Admin Flow
+
+An authenticated `ADMIN` account is routed to `/admin`. Admin routes fetch the current profile and reject users without the `ADMIN` role; the backend independently enforces `ROLE_ADMIN` for `/api/admin/**`.
+
+The admin navigation contains Dashboard, Products, and Orders. Product management uses the existing backend create/update/delete APIs. Order management views the current order list and uses the backend's existing confirm, ship, deliver, and cancel operations.
+
+Order status values come from the backend lifecycle: `PENDING`, `PLACED`, `CONFIRMED`, `SHIPPED`, `DELIVERED`, and `CANCELLED`. The customer order list and details display the latest status returned by the API; no real-time connection is used.
+
+## Source Layout
+
+- `src/customer/`: customer pages, auth, and storefront components
+- `src/admin/`: protected admin guard, layout, dashboard, and management pages
+- `src/State/`: Redux actions and reducers for auth, products, cart, and orders
+- `src/Routers/`: customer route composition
+- `src/config/`: Axios client and API base URL
+- `src/App.jsx`: top-level customer/admin route selection
+
+The backend URL and administrator role are configured on the backend. New signups are always customers; an administrator role must be provisioned by a trusted backend operator.

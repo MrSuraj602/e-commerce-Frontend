@@ -1,52 +1,40 @@
-import { Grid } from "@mui/material";
-import React from "react";
-import AdjustIcon from '@mui/icons-material/Adjust';
 import { useNavigate } from "react-router-dom";
-const OrderCard = () => {
+
+const OrderCard = ({ order }) => {
     const navigate = useNavigate();
+    const firstItem = order.orderItems?.[0];
+    const remainingItems = Math.max(0, (order.orderItems?.length || 0) - 1);
+
     return (
-        <div onClick={()=>navigate(`/account/order/${5}`)} className="p-5 shadow-lg shadow-gray hover:shadow-2xl ">
-            <Grid container spacing={2} sx={{ width:[1100], justifyContent: "space-around",border: "1px solid #e5e7eb", p: 2, borderRadius: 2 }}>
-                <Grid size={{ xs: 6 }}>
-                    <div className="flex cursor-pointer ">
-                        <img
-                            className="w-[5rem] h-[5rem] object-cover object-top"
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ60O2hNRrpjGqozeVEoVEroO12Sqg5vaulcUOVDh_xGA&s=10"
-                            alt=""
-                        />
-
-                        <div className="ml-5 space-y-2">
-                            <p className="text-lg font-bold">Title the is best seller</p>
-                            <p className="opacity-50 text-xs font-semibold">Size: M</p>
-                            <p className="opacity-50 text-xs font-semibold">Color : Black</p>
-                        </div>
-                    </div>
-
-                  
-                </Grid>
-                  <Grid size={{ xs: 2 }}>
-                        <p>Rs 1099</p>
-                    </Grid>
-                    <Grid size={{ xs: 4 }}>
-                       { true && <div> <p>
-                        <AdjustIcon sx={{width:"15px", height:"15px"}} className="text-green-600 mr-2 text-sm"/>
-                            <span>
-                                Delivered on Jan 12th
-                            </span>
-                            
+        <article className="border border-gray-200 bg-white p-4 sm:p-5">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-3 text-sm">
+                <span className="font-semibold text-gray-900">Order #{order.id}</span>
+                <span className="rounded bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-700">
+                    {order.orderStatus?.replaceAll("_", " ") || "Status unavailable"}
+                </span>
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-5">
+                <div className="flex min-w-0 items-center gap-4">
+                    {firstItem?.product?.imageUrl && (
+                        <img src={firstItem.product.imageUrl} alt={firstItem.product.title || "Ordered product"} className="h-16 w-16 shrink-0 border border-gray-200 object-cover" />
+                    )}
+                    <div className="min-w-0">
+                        <p className="truncate font-semibold text-gray-900">{firstItem?.product?.title || "Order items"}</p>
+                        <p className="mt-1 text-sm text-gray-500">
+                            {firstItem ? `${firstItem.quantity} × ${firstItem.size || "Standard size"}` : `${order.totalItem || 0} items`}
+                            {remainingItems > 0 ? ` · +${remainingItems} more` : ""}
                         </p>
-                        <p className="text-xs">Your Item Has Been Delivered</p>
-                        </div>
-                      }
-                       {false && <p>
-                            <span>
-                                Expencted Delivery on Jan 12th
-                            </span>
-                        </p>}
-                    </Grid>
-            </Grid>
-            
-        </div>
+                        <p className="mt-1 text-sm text-gray-500">{order.orderDate ? new Date(order.orderDate).toLocaleDateString() : ""}</p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-5">
+                      <span className="font-semibold">INR {order.totalPrice}</span>
+                    <button onClick={() => navigate(`/account/order/${order.id}`)} className="rounded border border-gray-300 px-3 py-2 text-sm font-medium hover:bg-gray-50">
+                        Details
+                    </button>
+                </div>
+            </div>
+        </article>
     );
 };
 

@@ -2,7 +2,6 @@ import axios from "axios";
 import { API_BASE_URL } from "../../config/apiConfig";
 import { GET_USER_FAILURE, GET_USER_REQUEST, GET_USER_SUCCESS, LOGIN_FAILURE, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT, REGISTER_FAILURE, REGISTER_REQUEST, REGISTER_SUCCESS } from "./ActionType";
 
-const token = localStorage.getItem("jwt")
 const registerRequest=()=>({type:REGISTER_REQUEST})
 const registerSuccess=(user)=>({type:REGISTER_SUCCESS,payload:user})
 const registerFAILURE=(error)=>({type:REGISTER_FAILURE,payload:error})
@@ -15,12 +14,13 @@ export const register = (userData)=> async (dispatch)=>{
         if(user.jwt){
             localStorage.setItem("jwt",user.jwt)
             localStorage.setItem("token",user.jwt)
+            localStorage.setItem("role",user.role || "CUSTOMER")
         }
-        console.log("user",user);
-        dispatch(registerSuccess(user.jwt))
+        dispatch(registerSuccess({jwt:user.jwt,role:user.role || "CUSTOMER"}))
+        return user
     } catch (error) {
         dispatch(registerFAILURE(error.message))
-        console.log("error",error)
+        return undefined
     }
 }
 
@@ -37,12 +37,13 @@ export const login = (userData)=> async (dispatch)=>{
         if(user.jwt){
             localStorage.setItem("jwt",user.jwt)
             localStorage.setItem("token",user.jwt)
+            localStorage.setItem("role",user.role || "CUSTOMER")
         }
-        console.log("user",user);
-        dispatch(loginSuccess(user.jwt))
+        dispatch(loginSuccess({jwt:user.jwt,role:user.role || "CUSTOMER"}))
+        return user
     } catch (error) {
         dispatch(loginFAILURE(error.message))
-        console.log("error",error)
+        return undefined
     }
 }
 
@@ -60,11 +61,11 @@ export const getUser = (jwt)=> async (dispatch)=>{
             }
         })
         const user = response.data;
-        console.log("user",user);
         dispatch(getUserSuccess(user))
+        return user
     } catch (error) {
         dispatch(getUserFAILURE(error.message))
-        console.log("error",error)
+        return undefined
     }
 }
 

@@ -1,22 +1,17 @@
-import React from 'react';
+const steps = ['Placed', 'Confirmed', 'Shipped', 'Delivered'];
 
-const steps = [
-  'Placed',
-  'Order Confirmed',
-  'Shipped',
-  'Out For Delivery',
-  'Delivered',
-];
+const stepByStatus = { PLACED: 0, CONFIRMED: 1, SHIPPED: 2, DELIVERED: 3 };
 
-const OrderTracker = ({ activeStep = 0 }) => {
+const OrderTracker = ({ activeStep = 0, status }) => {
+  const currentStep = status ? (stepByStatus[status] ?? 0) : activeStep;
   return (
     <div className="mx-auto w-full max-w-5xl">
       <div className="relative flex items-center justify-between gap-3">
-        <div className="absolute left-0 right-0 top-5 h-[2px] bg-gray-200" />
+        <div className="absolute left-0 right-0 top-5 h-0.5 bg-gray-200" />
 
         {steps.map((label, index) => {
-          const isActive = index === activeStep;
-          const isCompleted = index < activeStep;
+          const isActive = index === currentStep;
+          const isCompleted = index < currentStep;
 
           return (
             <div key={label} className="relative z-10 flex w-1/5 flex-col items-center">

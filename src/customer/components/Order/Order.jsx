@@ -1,51 +1,54 @@
-import { Grid } from "@mui/material";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getOrderHistory } from "../../../State/Order/Action";
 import OrderCard from "./OrderCard";
 
-
-const orderStatus = [
-  { label: "On the Way", value: "on_the_way" },
-  { label: "Delivered", value: "delivered" },
-  { label: "Cancelled", value: "cancelled" },
-  { label: "Returned", value: "returned" },
-];
 const Order = () => {
+  const dispatch = useDispatch();
+  const { orders, loading, error } = useSelector((state) => state.order);
+  const [selectedStatuses, setSelectedStatuses] = useState([]);
+
+  useEffect(() => {
+    dispatch(getOrderHistory());
+  }, [dispatch]);
+
+  const statuses = [...new Set(orders.map((order) => order.orderStatus).filter(Boolean))];
+  const visibleOrders = selectedStatuses.length === 0
+    ? orders
+    : orders.filter((order) => selectedStatuses.includes(order.orderStatus));
+
+  const toggleStatus = (status) => {
+    setSelectedStatuses((current) => current.includes(status)
+      ? current.filter((value) => value !== status)
+      : [...current, status]);
+  };
+
   return (
-    <div className="w-[90%] mx-auto mt-10">
-      <Grid container sx={{ justifyContent: "space-between"}}>
-        <Grid size={{ xs: 2.5 }}>
-          <div className="h-auto shadow-lg bg-white p-5 sticky top-5">
-            <h1 className="font-bold text-lg">Filter</h1>
+    <div className="mx-auto mt-8 grid w-[94%] max-w-7xl gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
+      <aside className="h-fit border border-gray-200 bg-white p-5">
+        <h1 className="text-lg font-semibold">Order status</h1>
+        <div className="mt-5 space-y-3">
+          {statuses.map((status) => (
+            <label key={status} className="flex items-center gap-3 text-sm text-gray-700">
+              <input
+                type="checkbox"
+                checked={selectedStatuses.includes(status)}
+                onChange={() => toggleStatus(status)}
+                className="h-4 w-4 rounded border-gray-300 text-indigo-600"
+              />
+              {status.replaceAll("_", " ")}
+            </label>
+          ))}
+          {statuses.length === 0 && <p className="text-sm text-gray-500">Statuses appear when you have orders.</p>}
+        </div>
+      </aside>
 
-            <div className="space-y-4 mt-10 ">
-              <h1 className="font-semibold">ORDER STATUS</h1>
-
-              {orderStatus.map((option) => (
-                <div className="flex items-center">
-                  <input
-                    defaultValue={option.value}
-                    type="checkbox"
-                    className="h-4 w-4 
-                        border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                  />
-
-                  <label
-                    className="ml-3 text-sm text-gray-600"
-                    htmlFor={option.value}
-                  >
-                    {option.label}
-                  </label>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Grid>
-
-        <Grid size={{ xs: 9.5 }}>
-            <div className="space-y-5">
-                {[1,1,1,1,1].map((item)=><OrderCard/>)}
-            </div>
-        </Grid>
-      </Grid>
+      <section aria-label="Your orders" className="min-w-0 space-y-4">
+        {error && <p role="alert" className="border border-red-200 bg-red-50 p-3 text-sm text-red-800">{error}</p>}
+        {loading && orders.length === 0 && <p className="py-8 text-center text-sm text-gray-500">Loading orders...</p>}
+        {!loading && visibleOrders.length === 0 && <p className="border border-gray-200 bg-white p-8 text-center text-sm text-gray-500">No orders found.</p>}
+        {visibleOrders.map((order) => <OrderCard key={order.id} order={order} />)}
+      </section>
     </div>
   );
 };

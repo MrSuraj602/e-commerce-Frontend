@@ -450,6 +450,15 @@ export default function Navigation() {
                       >
                         My Orders
                       </button>
+                      {auth.user?.role === "ADMIN" && (
+                        <button
+                          onClick={() => navigate("/admin")}
+                          type="button"
+                          className="w-full rounded-lg px-4 py-3 text-left text-sm font-medium text-gray-700 hover:bg-gray-50"
+                        >
+                          Admin panel
+                        </button>
+                      )}
                       <button
                       onClick={handleLogout}
                         type="button"

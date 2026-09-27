@@ -7,7 +7,7 @@ const LoginForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     // Handle form submission logic here
 
@@ -16,8 +16,10 @@ const LoginForm = () => {
       email:data.get("email"),
       password:data.get("password")
     }
-    dispatch(login(userData))
-    console.log("userdata" , userData)
+    const authenticatedUser = await dispatch(login(userData))
+    if (authenticatedUser?.jwt) {
+      navigate(authenticatedUser.role === "ADMIN" ? "/admin" : "/")
+    }
   }
 
   
@@ -57,6 +59,7 @@ const LoginForm = () => {
             id="password"
             name="password"
             label="Password"
+            type="password"
             fullWidth
             autoComplete="new-password" 
             variant="outlined"
